@@ -1,18 +1,32 @@
 import Stripe from "stripe";
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2024-04-10" as any,
-  typescript: true,
-});
+function getStripe(): Stripe {
+  const key = process.env.STRIPE_SECRET_KEY;
+  if (!key) {
+    throw new Error(
+      "STRIPE_SECRET_KEY is not set — configure it in your environment variables."
+    );
+  }
+  return new Stripe(key, {
+    apiVersion: "2025-02-24.acacia",
+    typescript: true,
+  });
+}
+
+let _stripe: Stripe | null = null;
+export function stripe(): Stripe {
+  if (!_stripe) _stripe = getStripe();
+  return _stripe;
+}
 
 export const PLANS = {
-  FREE: {
+  free: {
     name: "Free",
     priceId: null,
     price: 0,
-    features: ["Up to 3 projects", "Basic analytics", "Community support"],
+    features: ["1 project", "Basic analytics", "Community support"],
   },
-  PRO: {
+  pro: {
     name: "Pro",
     priceId: process.env.STRIPE_PRO_PRICE_ID || "price_pro",
     price: 29,
@@ -21,20 +35,18 @@ export const PLANS = {
       "Advanced analytics",
       "Priority support",
       "Custom domains",
-      "Team members (5)",
     ],
   },
-  ENTERPRISE: {
+  enterprise: {
     name: "Enterprise",
     priceId: process.env.STRIPE_ENTERPRISE_PRICE_ID || "price_enterprise",
     price: 99,
     features: [
       "Everything in Pro",
-      "Unlimited team members",
-      "SSO / SAML",
+      "SSO",
       "Dedicated support",
+      "SLA guarantee",
       "Custom integrations",
-      "99.99% SLA",
     ],
   },
 } as const;
