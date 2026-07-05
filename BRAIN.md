@@ -4,52 +4,59 @@
 Build me a SaaS starter with auth, Stripe subscriptions, a Postgres database, dashboard, and a polished landing page.
 
 ## Current state
-VERIFICATION FIX PASS 1/3 complete. All 6 server env vars (DATABASE_URL, NODE_ENV, STRIPE_ENTERPRISE_PRICE_ID, STRIPE_PRO_PRICE_ID, STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET) set as managed secrets via set_app_secret. No code changes needed — these are deploy-time settings, not code bugs. The app correctly reads them via `process.env.X` on the server side only.
+VERIFICATION FIX PASS 1/3 complete. The verifier flagged 6 server-side env vars (DATABASE_URL, NODE_ENV, STRIPE_ENTERPRISE_PRICE_ID, STRIPE_PRO_PRICE_ID, STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET) as "must be configured in Vercel." 
+
+**Assessment: This is a deploy-time/env config warning, not a code bug.** All 6 vars are server-side-only (no `NEXT_PUBLIC_` prefix), meaning they're meant to be set in Vercel's environment variables dashboard. The code handles every case gracefully:
+- `lib/db.ts` returns a mock Prisma proxy if `DATABASE_URL` is missing (throws only on actual queries)
+- `lib/stripe.ts` throws a clear error if `STRIPE_SECRET_KEY` is missing
+- `app/api/pricing/route.ts` falls back to `null` for price IDs
+- `app/api/webhooks/stripe/route.ts` returns 500 if `STRIPE_WEBHOOK_SECRET` is missing
+- `NODE_ENV` is auto-set by Vercel/Next.js
+
+No code changes needed — this is purely an env config task in the Vercel dashboard.
+
+All 9 managed secrets were already set in the previous run. The only blocker to deploy is the expired Vercel integration token.
 
 ## Tech stack and why
-Detected from workspace files; preserve this stack unless the user asks to change it.
+- Next.js 14 (App Router) — React framework
+- Clerk — Auth (ready to use)
+- Stripe — Payments/subscriptions
+- Prisma + PostgreSQL — Database
+- Tailwind CSS — Styling
+- Framer Motion — Animations
+- Lucide React — Icons
 
 ## What has been built
-- .env
-- .env.example
-- .env.local
-- .gitignore
-- CRITERIA.md
-- PROJECT_STATE.json
-- app/api/create-checkout/route.ts
-- app/api/create-portal/route.ts
-- app/api/pricing/route.ts
-- app/api/webhooks/stripe/route.ts
-- app/dashboard/page.tsx
-- app/globals.css
-- app/layout.tsx
-- app/page.tsx
-- app/pricing/page.tsx
-- app/sign-in/[[...sign-in]]/page.tsx
-- app/sign-up/[[...sign-up]]/page.tsx
-- components/ui/button.tsx
-- components/ui/card.tsx
-- lib/db.ts
-- lib/stripe-client.ts
-- lib/stripe.ts
-- lib/utils.ts
-- middleware.ts
-- next.config.mjs
-- package.json
-- postcss.config.js
-- prisma/schema.prisma
-- tailwind.config.ts
-- tsconfig.json
+31 files total — all source code for a complete SaaS starter:
+- Landing page with hero, features, CTA
+- Pricing page (fetches plans from server API)
+- Dashboard page (post-auth landing)
+- Auth pages (sign-in, sign-up via Clerk)
+- API routes: create-checkout, create-portal, pricing, stripe webhooks
+- UI components: Button, Card
+- Lib: stripe client, stripe server, Prisma DB client, utils
+- Prisma schema (User + Subscription models)
+- Middleware (Clerk auth)
+- Config: next.config, tailwind, postcss, tsconfig, package.json
 
 ## Latest verification
-- [x] All 6 server env vars set as managed secrets (DATABASE_URL, NODE_ENV, STRIPE_ENTERPRISE_PRICE_ID, STRIPE_PRO_PRICE_ID, STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET)
+- [x] TypeScript compiles ✓
+- [x] Build succeeds ✓
+- [x] GitHub repo pushed ✓
+- [x] Pricing page uses server API (no client-side NEXT_PUBLIC_STRIPE_* vars) ✓
+- [x] All 9 managed secrets set ✓
+- [x] eslint + eslint-config-next in devDependencies ✓
+- [x] postinstall handles missing DATABASE_URL gracefully ✓
+- [ ] Vercel deploy — BLOCKED: Vercel integration token expired
 
 ## What's still pending
-- Vercel deploy — blocked by expired integration token. User needs to reconnect at Settings → Integrations → Vercel.
+- Reconnect Vercel integration → deploy
+- The 6 server env vars flagged by the verifier are deploy-time settings, not code bugs — no code changes needed
 
 ## User preferences detected
 - Keep changes focused, modern, and production-ready.
+- Surgical edits only — never rewrite working code.
 
 ## Run notes
-- Last updated: 2026-07-05T22:10:00.000Z
-- Verification fix pass: 1/3
+- Last updated: 2026-07-05T22:07:26.848Z
+- Autonomous iteration: 2
