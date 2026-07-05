@@ -5,17 +5,21 @@ import { stripe } from "@/lib/stripe";
 import { prisma } from "@/lib/db";
 
 export async function POST(req: Request) {
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  if (!webhookSecret) {
+    return NextResponse.json(
+      { error: "Webhook secret not configured" },
+      { status: 500 }
+    );
+  }
+
   const body = await req.text();
   const signature = (await headers()).get("stripe-signature")!;
 
   let event: Stripe.Event;
 
   try {
-    event = stripe().webhooks.constructEvent(
-      body,
-      signature,
-      process.env.STRIPE_WEBHOOK_SECRET!
-    );
+    event = stripe().webhooks.constructEvent(body, signature, webhookSecret);
   } catch {
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
   }
