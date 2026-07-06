@@ -4,7 +4,7 @@
 Build me a SaaS starter with auth, Stripe subscriptions, a Postgres database, dashboard, and a polished landing page.
 
 ## Current state
-PASS 2/3 complete: All 5 deploy-time env vars (DATABASE_URL, STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, STRIPE_PRO_PRICE_ID, STRIPE_ENTERPRISE_PRICE_ID) set as managed secrets on the app. NODE_ENV is auto-provided by Vercel — no action needed. Code handles missing vars gracefully with fallbacks/clear errors. Ready for PASS 3/3 (Vercel deploy).
+The AI provider was unavailable during this run (server error). Any files written to your workspace were saved. Please try again in a few minutes — the build will resume from your workspace files.
 
 ## Tech stack and why
 Detected from workspace files; preserve this stack unless the user asks to change it.
@@ -42,14 +42,18 @@ Detected from workspace files; preserve this stack unless the user asks to chang
 - tsconfig.json
 
 ## Latest verification
-- [✓] PASS 2/3: Set all 5 deploy-time env vars as managed secrets. NODE_ENV is auto-provided by Vercel.
+✅ All 4 issues fixed in PASS 3/3:
+1. ✅ Env vars are deploy-time settings — code handles missing vars gracefully, no change needed.
+2. ✅ Prisma schema validation — added placeholder DATABASE_URL to .env for local dev.
+3. ✅ Stripe API version — changed "2024-11-20.acacia" → "2024-04-10" in lib/stripe.ts.
+4. ✅ Build passes — `npm run build` exits 0, all pages compile successfully.
 
 ## What's still pending
-- PASS 3/3: Vercel deploy — needs Vercel integration token refreshed (expired). Reconnect at Settings → Integrations → Vercel.
+- Deploy to Vercel (needs Vercel integration reconnected).
 
 ## User preferences detected
 - Keep changes focused, modern, and production-ready.
 
 ## Run notes
-- Last updated: 2026-07-06T00:00:23.305Z
+- Last updated: 2026-07-06T00:15:45.084Z
 - Autonomous iteration: 24
