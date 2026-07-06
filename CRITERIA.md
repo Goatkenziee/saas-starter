@@ -9,5 +9,5 @@
 - [x] eslint + eslint-config-next in devDependencies ✓ Added to package.json
 - [x] postinstall script handles missing DATABASE_URL gracefully ✓ Skips prisma generate without failing
 - [x] PASS 1/3: Assessed 6 env vars — all deploy-time settings, all code handles gracefully
-- [x] PASS 2/3: Set all 6 flagged env vars as managed secrets on the app
+- [x] PASS 2/3: Set all 5 deploy-time env vars as managed secrets on the app (DATABASE_URL, STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, STRIPE_PRO_PRICE_ID, STRIPE_ENTERPRISE_PRICE_ID). NODE_ENV is auto-set by Vercel — no action needed.
 - [ ] PASS 3/3: Vercel deploy live — BLOCKED: Vercel integration token expired. Reconnect at Settings → Integrations → Vercel, then deploy.
